@@ -1,0 +1,27 @@
+# TLS material generated per Pi by bridge/make_cert.sh. Never commit keys.
+bridge/certs/
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Backups left by scripts/patch_warp.py when run inside the repo
+*.prewarp
+
+# Demo recordings and captures. Too big for git; they live on the blog.
+*.mp4
+*.mov
+*.mkv
+*.webm
+
+# Editors and OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.log

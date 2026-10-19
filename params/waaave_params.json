@@ -1,0 +1,417 @@
+{
+  "_comment": "Single source of truth for the waaave_pool control surface. Extracted from WAAAVE-POOL-RP5-PORT/src/ofApp.cpp (midibiz + draw uniform block). The bridge loads this; the WebXR client fetches it over the socket. Nothing downstream of the bridge should ever hardcode a CC number.",
+  "_source": "WAAAVE-POOL-RP5-PORT @ 4cd08db, src/ofApp.cpp",
+  "midi_channel": 1,
+  "continuous": [
+    {
+      "id": "lumakey",
+      "cc": 16,
+      "slot": 0,
+      "uniform": "lumakey",
+      "label": "Lumakey",
+      "group": "key"
+    },
+    {
+      "id": "fb_mix",
+      "cc": 17,
+      "slot": 1,
+      "uniform": "fbMix",
+      "label": "FB Mix",
+      "group": "mix"
+    },
+    {
+      "id": "fb_hue",
+      "cc": 18,
+      "slot": 2,
+      "uniform": "fbHue",
+      "label": "Hue",
+      "group": "color"
+    },
+    {
+      "id": "fb_saturation",
+      "cc": 19,
+      "slot": 3,
+      "uniform": "fbSaturation",
+      "label": "Saturation",
+      "group": "color"
+    },
+    {
+      "id": "fb_bright",
+      "cc": 20,
+      "slot": 4,
+      "uniform": "fbBright",
+      "label": "Brightness",
+      "group": "color"
+    },
+    {
+      "id": "tfilter_mix",
+      "cc": 21,
+      "slot": 5,
+      "uniform": "temporalFilterMix",
+      "label": "T-Filter Mix",
+      "group": "time"
+    },
+    {
+      "id": "tfilter_res",
+      "cc": 22,
+      "slot": 6,
+      "uniform": "temporalFilterResonance",
+      "label": "T-Filter Res",
+      "group": "time"
+    },
+    {
+      "id": "sharpen",
+      "cc": 23,
+      "slot": 7,
+      "uniform": "sharpenAmount",
+      "label": "Sharpen",
+      "group": "mix"
+    },
+    {
+      "id": "fb_x_displace",
+      "cc": 120,
+      "slot": 8,
+      "uniform": "fbXDisplace",
+      "label": "X Displace",
+      "group": "warp",
+      "hand": "x"
+    },
+    {
+      "id": "fb_y_displace",
+      "cc": 121,
+      "slot": 9,
+      "uniform": "fbYDisplace",
+      "label": "Y Displace",
+      "group": "warp",
+      "hand": "y"
+    },
+    {
+      "id": "fb_z_displace",
+      "cc": 122,
+      "slot": 10,
+      "uniform": "fbZDisplace",
+      "label": "Z Displace",
+      "group": "warp",
+      "hand": "z"
+    },
+    {
+      "id": "fb_rotate",
+      "cc": 123,
+      "slot": 11,
+      "uniform": "fbRotate",
+      "label": "Rotate",
+      "group": "warp",
+      "hand": "roll"
+    },
+    {
+      "id": "huex_mod",
+      "cc": 124,
+      "slot": 12,
+      "uniform": "fbHuexMod",
+      "label": "Huex Mod",
+      "group": "chaos"
+    },
+    {
+      "id": "huex_off",
+      "cc": 125,
+      "slot": 13,
+      "uniform": "fbHuexOff",
+      "label": "Huex Offset",
+      "group": "chaos"
+    },
+    {
+      "id": "huex_lfo",
+      "cc": 126,
+      "slot": 14,
+      "uniform": "fbHuexLfo",
+      "label": "Huex LFO",
+      "group": "chaos"
+    },
+    {
+      "id": "frame_delay",
+      "cc": 127,
+      "slot": 15,
+      "uniform": "frameDelay",
+      "label": "Frame Delay",
+      "group": "time"
+    },
+    {
+      "id": "warp_center_x",
+      "cc": 80,
+      "slot": null,
+      "uniform": "warpcenterx",
+      "label": "Warp X",
+      "group": "warp2"
+    },
+    {
+      "id": "warp_center_y",
+      "cc": 81,
+      "slot": null,
+      "uniform": "warpcentery",
+      "label": "Warp Y",
+      "group": "warp2"
+    },
+    {
+      "id": "warp_pull_x",
+      "cc": 82,
+      "slot": null,
+      "uniform": "warppullx",
+      "label": "Pull X",
+      "group": "warp2"
+    },
+    {
+      "id": "warp_pull_y",
+      "cc": 83,
+      "slot": null,
+      "uniform": "warppully",
+      "label": "Pull Y",
+      "group": "warp2"
+    },
+    {
+      "id": "warp_amount",
+      "cc": 84,
+      "slot": null,
+      "uniform": "warpamount",
+      "label": "Warp Amt",
+      "group": "warp2"
+    },
+    {
+      "id": "warp_twist",
+      "cc": 85,
+      "slot": null,
+      "uniform": "warptwist",
+      "label": "Twist",
+      "group": "warp2"
+    },
+    {
+      "id": "warp_bulge",
+      "cc": 86,
+      "slot": null,
+      "uniform": "warpbulge",
+      "label": "Bulge",
+      "group": "warp2"
+    }
+  ],
+  "toggles": [
+    {
+      "id": "video_reactive",
+      "cc": 39,
+      "var": "videoReactiveSwitch",
+      "label": "Video Reactive",
+      "group": "mode"
+    },
+    {
+      "id": "p_lock",
+      "cc": 55,
+      "var": "p_lock_switch",
+      "label": "P-Lock",
+      "group": "mode"
+    },
+    {
+      "id": "toroid",
+      "cc": 46,
+      "var": "toroidSwitch",
+      "label": "Toroid",
+      "group": "geom"
+    },
+    {
+      "id": "mirror",
+      "cc": 61,
+      "var": "mirrorSwitch",
+      "label": "Mirror",
+      "group": "geom"
+    },
+    {
+      "id": "lumakey_invert",
+      "cc": 60,
+      "var": "lumakeyInvertSwitch",
+      "label": "Lumakey Invert",
+      "group": "key"
+    },
+    {
+      "id": "wet_dry",
+      "cc": 71,
+      "var": "wet_dry_switch",
+      "label": "Wet/Dry",
+      "group": "mix"
+    },
+    {
+      "id": "aspect_ratio",
+      "cc": 62,
+      "var": "hdmi_aspect_switch",
+      "label": "Aspect 16:9/4:3",
+      "group": "mode"
+    },
+    {
+      "id": "x_oct_2",
+      "cc": 32,
+      "var": "x_2",
+      "label": "X x2",
+      "group": "warp_oct"
+    },
+    {
+      "id": "x_oct_5",
+      "cc": 48,
+      "var": "x_5",
+      "label": "X x5",
+      "group": "warp_oct"
+    },
+    {
+      "id": "x_oct_10",
+      "cc": 64,
+      "var": "x_10",
+      "label": "X x10",
+      "group": "warp_oct"
+    },
+    {
+      "id": "y_oct_2",
+      "cc": 33,
+      "var": "y_2",
+      "label": "Y x2",
+      "group": "warp_oct"
+    },
+    {
+      "id": "y_oct_5",
+      "cc": 49,
+      "var": "y_5",
+      "label": "Y x5",
+      "group": "warp_oct"
+    },
+    {
+      "id": "y_oct_10",
+      "cc": 65,
+      "var": "y_10",
+      "label": "Y x10",
+      "group": "warp_oct"
+    },
+    {
+      "id": "z_oct_2",
+      "cc": 34,
+      "var": "z_2",
+      "label": "Z x2",
+      "group": "warp_oct"
+    },
+    {
+      "id": "z_oct_5",
+      "cc": 50,
+      "var": "z_5",
+      "label": "Z x5",
+      "group": "warp_oct"
+    },
+    {
+      "id": "z_oct_10",
+      "cc": 66,
+      "var": "z_10",
+      "label": "Z x10",
+      "group": "warp_oct"
+    },
+    {
+      "id": "theta_0",
+      "cc": 35,
+      "var": "theta_0",
+      "label": "Rot 0",
+      "group": "warp_oct"
+    },
+    {
+      "id": "theta_1",
+      "cc": 51,
+      "var": "theta_1",
+      "label": "Rot 1",
+      "group": "warp_oct"
+    },
+    {
+      "id": "theta_2",
+      "cc": 67,
+      "var": "theta_2",
+      "label": "Rot 2",
+      "group": "warp_oct"
+    },
+    {
+      "id": "huexx_0",
+      "cc": 36,
+      "var": "huexx_0",
+      "label": "HueXX 0",
+      "group": "chaos"
+    },
+    {
+      "id": "huexx_1",
+      "cc": 52,
+      "var": "huexx_1",
+      "label": "HueXX 1",
+      "group": "chaos"
+    },
+    {
+      "id": "huexx_2",
+      "cc": 68,
+      "var": "huexx_2",
+      "label": "HueXX 2",
+      "group": "chaos"
+    },
+    {
+      "id": "huexy_0",
+      "cc": 37,
+      "var": "huexy_0",
+      "label": "HueXY 0",
+      "group": "chaos"
+    },
+    {
+      "id": "huexy_1",
+      "cc": 53,
+      "var": "huexy_1",
+      "label": "HueXY 1",
+      "group": "chaos"
+    },
+    {
+      "id": "huexy_2",
+      "cc": 69,
+      "var": "huexy_2",
+      "label": "HueXY 2",
+      "group": "chaos"
+    },
+    {
+      "id": "huexz_0",
+      "cc": 38,
+      "var": "huexz_0",
+      "label": "HueXZ 0",
+      "group": "chaos"
+    },
+    {
+      "id": "huexz_1",
+      "cc": 54,
+      "var": "huexz_1",
+      "label": "HueXZ 1",
+      "group": "chaos"
+    },
+    {
+      "id": "huexz_2",
+      "cc": 70,
+      "var": "huexz_2",
+      "label": "HueXZ 2",
+      "group": "chaos"
+    }
+  ],
+  "hand_map": {
+    "_comment": "Default binding from a two-hand grab gesture to synth params. Magnitudes are deliberately conservative; the warp params are bipolar around 0.5 in 7-bit space.",
+    "grab_translate_x": {
+      "param": "fb_x_displace",
+      "center": 0.5,
+      "range": 0.5
+    },
+    "grab_translate_y": {
+      "param": "fb_y_displace",
+      "center": 0.5,
+      "range": 0.5
+    },
+    "grab_scale": {
+      "param": "fb_z_displace",
+      "center": 0.5,
+      "range": 0.5
+    },
+    "grab_roll": {
+      "param": "fb_rotate",
+      "center": 0.5,
+      "range": 0.5
+    }
+  },
+  "_warp_note": "CC 80-86 are the bummyWAVES warp stage added by scripts/patch_warp.py \u2014 not stock waaave_pool. They bypass p_lock soft-takeover so a hand gesture moves the image with no pickup delay."
+}

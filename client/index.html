@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>bummyWAVES</title>
+<style>
+  :root{
+    --bg:#08070c; --ink:#f2effa; --dim:#8d86a8;
+    --hot:#ff2d7e; --cool:#25e0d0; --warn:#ffb020;
+    --edge:#221d31; --card:#100d18;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.5 ui-monospace,"SF Mono",Menlo,monospace;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px; overflow-x:hidden;
+  }
+  .wrap{width:min(560px,100%)}
+  h1{
+    font-size:clamp(34px,9vw,58px); margin:0 0 2px; letter-spacing:-.04em;
+    background:linear-gradient(96deg,var(--hot),var(--cool));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .sub{color:var(--dim); margin:0 0 26px; font-size:13px; letter-spacing:.14em; text-transform:uppercase}
+  .card{background:var(--card); border:1px solid var(--edge); border-radius:14px; padding:18px; margin-bottom:12px}
+  button.launch{
+    width:100%; padding:22px; font:700 19px/1 ui-monospace,monospace; letter-spacing:.04em;
+    color:#0a0710; background:linear-gradient(96deg,var(--hot),var(--cool));
+    border:0; border-radius:12px; cursor:pointer; transition:transform .12s ease, filter .12s ease;
+  }
+  button.launch:hover:not(:disabled){transform:translateY(-2px); filter:brightness(1.1)}
+  button.launch:active:not(:disabled){transform:translateY(0)}
+  button.launch:disabled{opacity:.4; cursor:not-allowed; filter:grayscale(.7)}
+  .row{display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px solid var(--edge); font-size:13px}
+  .row:last-child{border-bottom:0}
+  .row span:first-child{color:var(--dim)}
+  .ok{color:var(--cool)} .bad{color:var(--hot)} .wait{color:var(--warn)}
+  .note{font-size:12.5px; color:var(--dim); line-height:1.65; margin:14px 2px 0}
+  code{background:#1a1626; padding:1px 6px; border-radius:4px; color:var(--cool); font-size:12px}
+  .hint{margin-top:10px; padding:11px 13px; border-left:2px solid var(--warn); background:#170f0a; border-radius:0 8px 8px 0; font-size:12.5px; color:#d6c9b4}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>bummyWAVES</h1>
+  <p class="sub">waaave_pool · xr control surface</p>
+
+  <div class="card">
+    <button class="launch" id="launch" disabled>CHECKING HEADSET…</button>
+    <div class="hint" id="hint" hidden></div>
+  </div>
+
+  <div class="card">
+    <div class="row"><span>WebXR</span><span id="s-xr" class="wait">checking</span></div>
+    <div class="row"><span>Passthrough (immersive-ar)</span><span id="s-ar" class="wait">checking</span></div>
+    <div class="row"><span>Bridge</span><span id="s-ws" class="wait">connecting</span></div>
+    <div class="row"><span>MIDI → waaave_pool</span><span id="s-midi" class="wait">—</span></div>
+    <div class="row"><span>Video source</span><span id="s-vid" class="wait">—</span></div>
+  </div>
+
+  <p class="note">
+    Any face button opens the menu, either controller. Drag a panel by its
+    <strong>title bar</strong> to place it. No controllers needed — hand tracking
+    works throughout: pinch to press, pinch both hands for the menu.
+  </p>
+</div>
+
+<script type="module">
+import { Net } from './src/net.js';
+
+const el = id => document.getElementById(id);
+const set = (id, text, cls) => { const n = el(id); n.textContent = text; n.className = cls; };
+
+let xrOK = false, arOK = false;
+
+// --- capability probe ----------------------------------------------------
+if (!navigator.xr) {
+  set('s-xr', 'unavailable', 'bad');
+  set('s-ar', 'unavailable', 'bad');
+  const isSecure = window.isSecureContext;
+  el('hint').hidden = false;
+  el('hint').innerHTML = isSecure
+    ? 'No WebXR in this browser. Open this page in the <strong>Meta Quest Browser</strong>.'
+    : `This page is on an insecure origin (<code>${location.protocol}//</code>), so the browser hides WebXR entirely. It must be served over <strong>https</strong> — run <code>bridge/make_cert.sh</code> on the Pi and reload over https.`;
+} else {
+  xrOK = true;
+  set('s-xr', 'available', 'ok');
+  try {
+    arOK = await navigator.xr.isSessionSupported('immersive-ar');
+    set('s-ar', arOK ? 'supported' : 'not supported', arOK ? 'ok' : 'bad');
+  } catch {
+    set('s-ar', 'probe failed', 'bad');
+  }
+}
+
+// --- bridge --------------------------------------------------------------
+const net = new Net();
+net.on('open', () => set('s-ws', 'connected', 'ok'));
+net.on('close', () => { set('s-ws', 'disconnected', 'bad'); set('s-midi', '—', 'wait'); });
+net.on('params', p => {
+  set('s-midi', p.midi?.live ? `live · ${p.midi.port}` : 'no MIDI port', p.midi?.live ? 'ok' : 'bad');
+  const v = p.video || {};
+  set('s-vid', v.available ? `ready · ${v.loopback}` : 'no loopback device', v.available ? 'ok' : 'wait');
+});
+net.connect();
+
+// --- launch --------------------------------------------------------------
+const btn = el('launch');
+function refreshButton() {
+  if (xrOK && arOK) { btn.disabled = false; btn.textContent = 'ENTER PASSTHROUGH'; }
+  else if (xrOK)    { btn.disabled = false; btn.textContent = 'ENTER VR (no passthrough)'; }
+  else              { btn.disabled = true;  btn.textContent = 'WEBXR UNAVAILABLE'; }
+}
+refreshButton();
+
+btn.addEventListener('click', async () => {
+  btn.disabled = true; btn.textContent = 'STARTING…';
+  try {
+    const { start } = await import('./src/app.js');
+    await start({ net, preferAR: arOK });
+    btn.textContent = 'SESSION RUNNING';
+  } catch (e) {
+    console.error(e);
+    btn.disabled = false;
+    btn.textContent = 'FAILED — TAP TO RETRY';
+    el('hint').hidden = false;
+    el('hint').textContent = String(e?.message || e);
+  }
+});
+</script>
+</body>
+</html>
