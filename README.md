@@ -188,3 +188,11 @@ Next: using the headset's camera as a live input into the pool. See
 · Pi 5 port: [WAAAVE-POOL-RP5-PORT](https://github.com/bar2098/WAAAVE-POOL-RP5-PORT)
 · **r_e_c_u_r** by cyberboy666 / langolierz, whose video backend is the model
 for the video player · three.js · openFrameworks
+
+---
+
+## License
+
+[PolyForm Noncommercial 1.0.0](LICENSE.md). Use it, change it, share it, but
+don't make money off it. three.js in `client/vendor/` is MIT and keeps its own
+license.
